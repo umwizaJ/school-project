@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5001:5000"
+    environment:
+      DATABASE_HOST: my-database
+      DATABASE_USER: myuser
+      DATABASE_PASSWORD: mypassword
+      DATABASE_NAME: mydatabase
+    networks:
+      - app-network
+
+  database:
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./DB/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db-data:
