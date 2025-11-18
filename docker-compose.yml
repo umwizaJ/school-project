@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
   frontend:
     build:
@@ -21,7 +21,7 @@ services:
     networks:
       - app-network
 
-  database:
+  my-database:
     image: postgres:latest
     volumes:
       - db-data:/var/lib/postgresql/data
