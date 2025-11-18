@@ -8,8 +8,8 @@ on:
       - staging
       - production
     paths:
-      - 'frontend/**'
-      - 'backend/**'
+      - 'Frontend/**'
+      - 'Backend/**'
       - '.github/workflows/ci.yaml'
 
 env:
