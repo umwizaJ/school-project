@@ -1,4 +1,5 @@
-name: CI pipeline for Web App
+name: CI pipeline for the app
+
 on:
   push:
     branches:
@@ -12,22 +13,28 @@ on:
       - '.github/workflows/ci.yaml'
 
 env:
-    REGISTRY: ghcr.io
-    
+  REGISTRY: ghcr.io
+
 jobs:
   build-push:
     runs-on: ubuntu-24.04
-    permissions:                    
+    permissions:
       contents: read
       packages: write
     outputs:
       image_tag: ${{ steps.set-tag.outputs.tag }}
       branch: ${{ github.ref_name }}
     steps:
+      # -------------------------------
+      # Checkout repository
+      # -------------------------------
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # -------------------------------
+      # Login to GitHub Container Registry
+      # -------------------------------
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -35,40 +42,65 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # -------------------------------
+      # Set branch name
+      # -------------------------------
       - name: Set current branch name
         run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-      
+
+      # -------------------------------
+      # Set up Docker buildx
+      # -------------------------------
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
-        
+
+      # -------------------------------
+      # Increment semantic version
+      # -------------------------------
       - name: Increment semantic version
         uses: paulhatch/semantic-version@v5.4.0
         id: versioning
         with:
           bump_each_commit: true
           tag_prefix: "v"
-  
+
+      # -------------------------------
+      # Set image tag and repo name
+      # -------------------------------
       - name: Set image tag and name (lowercase)
         id: set-tag
         run: |
           REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_NAME="${REPO_LOWER}/web-app"
-          TAG="${{ env.BRANCH_NAME }}-v${{ steps.versioning.outputs.version }}"
-          
+          TAG="${BRANCH_NAME}-v${{ steps.versioning.outputs.version }}"
+
           echo "image=${IMAGE_NAME}" >> $GITHUB_OUTPUT
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           
           echo "Image: ${{ env.REGISTRY }}/${IMAGE_NAME}:${TAG}"
 
-      - name: Build and push
+      # -------------------------------
+      # Build & push BACKEND image
+      # -------------------------------
+      - name: Build & push BACKEND image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./Dockerfile 
+          context: ./Backend
+          file: ./Backend/Dockerfile
           push: true
-          build-args: |
-            PROJECT_NAME=web-app
-            ENV=${{ env.BRANCH_NAME }}
-          tags: ${{ env.REGISTRY }}/${{ steps.set-tag.outputs.image }}:${{ steps.set-tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/${{ steps.set-tag.outputs.image }}/backend:${{ steps.set-tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # -------------------------------
+      # Build & push FRONTEND image
+      # -------------------------------
+      - name: Build & push FRONTEND image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Frontend
+          file: ./Frontend/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ steps.set-tag.outputs.image }}/frontend:${{ steps.set-tag.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
