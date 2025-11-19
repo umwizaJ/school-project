@@ -16,6 +16,33 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Test Backend
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: Backend/package-lock.json
+      
+      - name: Install Backend dependencies
+        working-directory: ./Backend
+        run: npm ci
+      
+      - name: Run Backend tests
+        working-directory: ./Backend
+        run: npm test
+      
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: Backend/coverage/
   build-push:
     runs-on: ubuntu-24.04
     permissions:
@@ -71,7 +98,7 @@ jobs:
         id: set-tag
         run: |
           REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          IMAGE_NAME="${REPO_LOWER}/web-app"
+          IMAGE_NAME="${REPO_LOWER}"
           TAG="${BRANCH_NAME}-v${{ steps.versioning.outputs.version }}"
 
           echo "image=${IMAGE_NAME}" >> $GITHUB_OUTPUT
