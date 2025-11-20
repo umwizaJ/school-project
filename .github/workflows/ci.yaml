@@ -44,6 +44,7 @@ jobs:
           name: coverage-report
           path: Backend/coverage/
   build-push:
+    needs: test
     runs-on: ubuntu-24.04
     permissions:
       contents: read
