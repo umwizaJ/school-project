@@ -1,0 +1,110 @@
+# Default values for school-project
+
+namespace: app
+# Image registry credentials
+imageCredentials:
+  registry: ghcr.io
+  username: umwizaj
+  # password should be set via --set or values override
+
+# Database configuration
+postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "15-alpine"
+    pullPolicy: IfNotPresent
+  
+  persistence:
+    enabled: true
+    storageClass: "standard-rwo"
+    size: 2Gi
+  
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  
+  database: mydatabase
+  username: myuser
+  password: mypassword  # Change in production!
+  
+  service:
+    type: ClusterIP
+    port: 5432
+
+# Backend configuration
+backend:
+  enabled: true
+  replicaCount: 2
+  
+  image:
+    repository: ${BACKEND_IMAGE_REPO}
+    tag: ${IMAGE_TAG}
+    pullPolicy: Always
+  
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  
+  service:
+    type: ClusterIP
+    port: 5000
+    targetPort: 3000
+  
+  env:
+    DATABASE_HOST: postgres-service
+    DATABASE_NAME: mydatabase
+    DATABASE_USER: myuser
+  
+  healthCheck:
+    path: /health
+    port: 3000
+
+# Frontend configuration
+frontend:
+  enabled: true
+  replicaCount: 2
+  
+  image:
+    repository: ${FRONTEND_IMAGE_REPO}
+    tag: ${IMAGE_TAG}
+    pullPolicy: Always
+  
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 80
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: "gce"
+  annotations: {}
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /api
+          pathType: Prefix
+          service: backend-service
+          port: 5000
+        - path: /
+          pathType: Prefix
+          service: frontend-service
+          port: 80
+  tls: []
