@@ -42,8 +42,8 @@ backend:
   replicaCount: 2
   
   image:
-    repository: ${BACKEND_IMAGE_REPO}
-    tag: ${IMAGE_TAG}
+    repository: ghcr.io/umwizaj/backend
+    tag: latest
     pullPolicy: Always
   
   resources:
@@ -74,8 +74,8 @@ frontend:
   replicaCount: 2
   
   image:
-    repository: ${FRONTEND_IMAGE_REPO}
-    tag: ${IMAGE_TAG}
+    repository: ghcr.io/umwizaj/frontend
+    tag: latest
     pullPolicy: Always
   
   resources:
