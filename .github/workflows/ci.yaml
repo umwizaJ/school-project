@@ -7,10 +7,6 @@ on:
       - testing
       - staging
       - production
-    paths:
-      - 'Frontend/**'
-      - 'Backend/**'
-      - '.github/workflows/ci.yaml'
 
 env:
   REGISTRY: ghcr.io
