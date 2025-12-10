@@ -1,0 +1,11 @@
+{{- if .Values.backend.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: {{ .Values.namespace }}
+data:
+  DATABASE_HOST: {{ .Values.backend.env.DATABASE_HOST | quote }}
+  DATABASE_NAME: {{ .Values.backend.env.DATABASE_NAME | quote }}
+  DATABASE_USER: {{ .Values.backend.env.DATABASE_USER | quote }}
+{{- end }}

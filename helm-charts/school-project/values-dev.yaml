@@ -1,6 +1,6 @@
 # Default values for school-project
 
-namespace: app
+namespace: apps
 # Image registry credentials
 imageCredentials:
   registry: ghcr.io
