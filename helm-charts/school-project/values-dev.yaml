@@ -42,8 +42,8 @@ backend:
   replicaCount: 2
   
   image:
-    repository: ghcr.io/umwizaj/backend
-    tag: "dev"
+    repository: ghcr.io/umwizaj/school-project/backend
+    tag: "dev-v0.0.55"
     pullPolicy: Always
   
   resources:
@@ -74,8 +74,8 @@ frontend:
   replicaCount: 2
   
   image:
-    repository: ghcr.io/umwizaj/frontend
-    tag: "dev"
+    repository: ghcr.io/umwizaj/school-project/frontend
+    tag: "dev-v0.0.55"
     pullPolicy: Always
   
   resources:

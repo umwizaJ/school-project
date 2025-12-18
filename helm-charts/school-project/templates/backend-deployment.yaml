@@ -63,8 +63,6 @@ spec:
               key: DATABASE_PASSWORD
         resources:
           {{- toYaml .Values.backend.resources | nindent 10 }}
-      imagePullSecrets:
-      - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
