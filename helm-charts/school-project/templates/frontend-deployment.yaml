@@ -22,8 +22,6 @@ spec:
         - containerPort: {{ .Values.frontend.service.targetPort }}
         resources:
           {{- toYaml .Values.frontend.resources | nindent 10 }}
-      imagePullSecrets:
-      - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
