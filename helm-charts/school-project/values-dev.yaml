@@ -93,7 +93,7 @@ frontend:
 
 # Ingress configuration
 ingress:
-  enabled: enabled
+  enabled: true
   className: "gce"
   annotations: {}
   hosts:
