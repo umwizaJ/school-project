@@ -5,6 +5,7 @@ namespace: apps
 imageCredentials:
   registry: ghcr.io
   username: umwizaj
+  password: "dummy"
   # password should be set via --set or values override
 
 # Database configuration
