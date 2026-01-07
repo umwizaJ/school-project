@@ -88,7 +88,7 @@ frontend:
       cpu: "100m"
   
   service:
-    type: LoadBalancer
+    type: NodePort
     port: 80
     targetPort: 80
 
