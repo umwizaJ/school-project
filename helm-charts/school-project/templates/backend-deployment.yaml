@@ -69,6 +69,8 @@ kind: Service
 metadata:
   name: backend-service
   namespace: {{ .Values.namespace }}
+  annotations:
+    cloud.google.com/backend-config: '{"default": "{{ .Release.Name }}-backend-health"}'
 spec:
   selector:
     app: backend
