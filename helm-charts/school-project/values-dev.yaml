@@ -104,6 +104,10 @@ ingress:
           pathType: Prefix
           service: backend-service
           port: 5000
+        - path: /api/health
+          pathType: Prefix
+          service: backend-service
+          port: 5000
         - path: /
           pathType: Prefix
           service: frontend-service
