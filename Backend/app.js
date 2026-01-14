@@ -24,7 +24,23 @@ pool.connect((err, client, release) => {
     console.log('Connected to PostgreSQL database.');
     release();
 });
+// API root endpoint
+app.get('/api', (req, res) => {
+    res.json({ 
+        message: 'API is running',
+        version: '1.0.0',
+        endpoints: ['/api/health', '/api/data']
+    });
+});
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'OK', message: 'Backend is running' });
+});
+
+app.listen(PORT, () => {
+    console.log(`Backend server is running on port ${PORT}`);
+});
 // Define a route to fetch data
 app.get('/api/data', async (req, res) => {
     try {
@@ -35,12 +51,6 @@ app.get('/api/data', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.json({ status: 'OK', message: 'Backend is running' });
-});
-
 app.listen(PORT, () => {
     console.log(`Backend server is running on port ${PORT}`);
 });
