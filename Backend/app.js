@@ -38,9 +38,7 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Backend is running' });
 });
 
-app.listen(PORT, () => {
-    console.log(`Backend server is running on port ${PORT}`);
-});
+
 // Define a route to fetch data
 app.get('/api/data', async (req, res) => {
     try {
